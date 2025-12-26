@@ -12,12 +12,24 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <itext.version>9.4.0</itext.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
             <version>11.0.15</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-core</artifactId>
+            <version>${itext.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>bouncy-castle-adapter</artifactId>
+            <version>${itext.version}</version>
         </dependency>
     </dependencies>
 </project>
