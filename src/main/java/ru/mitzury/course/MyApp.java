@@ -2,6 +2,8 @@ package ru.mitzury.course;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
+import ru.mitzury.course.core.DispatcherServlet;
+import ru.mitzury.course.core.Router;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,9 +22,8 @@ public class MyApp {
         Path tempDir = Files.createTempDirectory("tomcat");
         Context context = tomcat.addContext("", tempDir.toString());
 
-        // регистрация сервлета
-        Tomcat.addServlet(context, "helloServlet", new HelloServlet());
-        context.addServletMappingDecoded("/", "helloServlet");
+        Tomcat.addServlet(context, "dispatcher", new DispatcherServlet());
+        context.addServletMappingDecoded("/*", "dispatcher");
 
         tomcat.start();
         System.out.println("Server started: http://localhost:8080");
