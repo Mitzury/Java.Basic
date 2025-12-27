@@ -2,15 +2,16 @@ package ru.mitzury.course.app;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.mitzury.course.core.BaseController;
+
 import java.io.IOException;
 
-public class MainController {
+public class MainController extends BaseController {
 
-    public void handle(HttpServletRequest req, HttpServletResponse resp)
+    @Override
+    protected void doHandle(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        resp.setContentType("text/plain; charset=UTF-8");
-        resp.getWriter().write("Hello from Dispatcher");
+        render(resp, "Main");
     }
-
 }

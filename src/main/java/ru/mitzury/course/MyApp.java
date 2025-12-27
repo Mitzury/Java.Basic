@@ -3,7 +3,6 @@ package ru.mitzury.course;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import ru.mitzury.course.core.DispatcherServlet;
-import ru.mitzury.course.core.Router;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +25,7 @@ public class MyApp {
         context.addServletMappingDecoded("/*", "dispatcher");
 
         tomcat.start();
-        System.out.println("Server started: http://localhost:8080");
+        System.out.println(tomcat.getHost() + " Port: " + tomcat.getConnector().getLocalPort());
 
         tomcat.getServer().await();
     }
