@@ -1,20 +1,19 @@
 package ru.mitzury.course.core.dto;
 
-public class Response<T> {
-    public boolean success;
-    public String error;
-    public T data;
+public class Response {
 
-    public static <T> Response<T> ok(T data) {
-        Response<T> r = new Response<>();
-        r.success = true;
-        r.data = data;
+    public String status;
+    public String error;
+
+    public static Response success() {
+        Response r = new Response();
+        r.status = "success";
         return r;
     }
 
-    public static Response<?> error(String msg) {
-        Response<?> r = new Response<>();
-        r.success = false;
+    public static Response error(String msg) {
+        Response r = new Response();
+        r.status = "error";
         r.error = msg;
         return r;
     }

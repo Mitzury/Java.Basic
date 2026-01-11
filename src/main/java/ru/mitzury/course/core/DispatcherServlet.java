@@ -26,10 +26,10 @@ public class DispatcherServlet extends HttpServlet {
             Request request = mapper.readValue(req.getInputStream(), Request.class);
             request.validate();
 
-            Object result = dispatch(request);
-            Response<?> response = Response.ok(result);
+            dispatch(request);
 
-            mapper.writeValue(resp.getOutputStream(), response);
+            mapper.writeValue(resp.getOutputStream(), Response.success());
+
 
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -40,12 +40,12 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-    private Object dispatch(Request request) {
-        return switch (request.getMSG().name) {
+    private void dispatch(Request request) {
+        switch (request.getMSG().name) {
             case "doSign" -> DoSign.handle(request.getMSG().data);
             default -> throw new IllegalArgumentException(
                     "Unknown MSG.NAME: " + request.getMSG().name
             );
-        };
+        }
     }
 }
