@@ -14,12 +14,11 @@ public class MyApp {
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
         tomcat.setHostname("127.0.0.1");
-        // ОБЯЗАТЕЛЬНО: инициализация коннектора
         tomcat.getConnector();
 
-        // временная директория (Tomcat требует docBase)
-        Path tempDir = Files.createTempDirectory("tomcat");
-        Context context = tomcat.addContext("", tempDir.toString());
+        Path baseDir = Files.createTempDirectory("tomcat");
+        tomcat.setBaseDir(baseDir.toString());
+        Context context = tomcat.addContext("", baseDir.toString());
 
         Tomcat.addServlet(context, "dispatcher", new DispatcherServlet());
         context.addServletMappingDecoded("/api/v1/*", "dispatcher");

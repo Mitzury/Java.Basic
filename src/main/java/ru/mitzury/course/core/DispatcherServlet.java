@@ -1,38 +1,51 @@
 package ru.mitzury.course.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.mitzury.course.core.dto.Request;
+import ru.mitzury.course.core.dto.Response;
+import ru.mitzury.course.app.DoSign;
+
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.mitzury.course.core.handler.*;
 
-import java.util.Map;
+import java.io.IOException;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private Map<String, PostHandler> handlers;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public void init() {
-        handlers = Map.of(
-                "/echo", new EchoHandler()
-        );
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        try {
+            Request request = mapper.readValue(req.getInputStream(), Request.class);
+            request.validate();
+
+            Object result = dispatch(request);
+            Response<?> response = Response.ok(result);
+
+            mapper.writeValue(resp.getOutputStream(), response);
+
+        } catch (IllegalArgumentException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            mapper.writeValue(resp.getOutputStream(), Response.error(e.getMessage()));
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            mapper.writeValue(resp.getOutputStream(), Response.error("Internal error"));
+        }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        try {
-            String path = req.getPathInfo(); // /ping, /echo
-
-            PostHandler handler = handlers.get(path);
-            if (handler == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown POST endpoint");
-                return;
-            }
-
-            handler.handle(req, resp);
-
-        } catch (Exception e) {
-            throw new RuntimeException("POST handling failed", e);
-        }
+    private Object dispatch(Request request) {
+        return switch (request.getMSG().name) {
+            case "doSign" -> DoSign.handle(request.getMSG().data);
+            default -> throw new IllegalArgumentException(
+                    "Unknown MSG.NAME: " + request.getMSG().name
+            );
+        };
     }
 }
