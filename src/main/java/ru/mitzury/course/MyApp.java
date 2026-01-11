@@ -22,7 +22,7 @@ public class MyApp {
         Context context = tomcat.addContext("", tempDir.toString());
 
         Tomcat.addServlet(context, "dispatcher", new DispatcherServlet());
-        context.addServletMappingDecoded("/*", "dispatcher");
+        context.addServletMappingDecoded("/api/v1/*", "dispatcher");
 
         tomcat.start();
         System.out.println(tomcat.getHost() + " Port: " + tomcat.getConnector().getLocalPort());
