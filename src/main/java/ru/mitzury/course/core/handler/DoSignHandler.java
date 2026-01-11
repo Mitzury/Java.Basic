@@ -1,7 +1,9 @@
 package ru.mitzury.course.core.handler;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import ru.mitzury.course.app.DoSign;
-import ru.mitzury.course.core.dto.MessageRequest;
+import ru.mitzury.course.core.BadRequestException;
+import ru.mitzury.course.core.http.Request;
 import ru.mitzury.course.core.http.Response;
 
 public class DoSignHandler implements Handler {
@@ -9,10 +11,16 @@ public class DoSignHandler implements Handler {
     private final DoSign app = new DoSign();
 
     @Override
-    public void handle(MessageRequest.Message message, Response resp) throws Exception {
+    public void handle(Request req, Response resp) throws Exception {
 
-        String result = app.sign(message.data);
+        JsonNode msg = req.jsonTree().get("msg").get(0);
+        JsonNode dataNode = msg.get("data");
 
-        resp.ok(result);
+        if (dataNode == null || !dataNode.isTextual()) {
+            throw new BadRequestException("Field 'data' is required for DoSign");
+        }
+
+
+        resp.ok(app.sign(dataNode.asText()));
     }
 }
