@@ -1,51 +1,59 @@
 package ru.mitzury.course.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.mitzury.course.core.dto.Request;
-import ru.mitzury.course.core.dto.Response;
-import ru.mitzury.course.app.DoSign;
-
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.mitzury.course.core.dto.MessageRequest;
+import ru.mitzury.course.core.handler.DoSignHandler;
+import ru.mitzury.course.core.handler.Handler;
+import ru.mitzury.course.core.http.Request;
+import ru.mitzury.course.core.http.Response;
+
 
 import java.io.IOException;
+import java.util.Map;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final Map<String, Handler> handlers = Map.of(
+            "DoSign", new DoSignHandler()
+    );
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+        Request request = new Request(req);
+        Response response = new Response(resp);
+
+        if (!"POST".equalsIgnoreCase(request.method())) {
+            response.methodNotAllowed();
+            return;
+        }
 
         try {
-            Request request = mapper.readValue(req.getInputStream(), Request.class);
-            request.validate();
+            MessageRequest body = request.json(MessageRequest.class);
 
-            dispatch(request);
+            if (body.messages == null || body.messages.isEmpty()) {
+                response.badRequest("msg is empty");
+                return;
+            }
 
-            mapper.writeValue(resp.getOutputStream(), Response.success());
+            MessageRequest.Message message = body.messages.get(0);
+            Handler handler = handlers.get(message.msgName);
 
+            if (handler == null) {
+                response.badRequest("Unknown MsgName: " + message.msgName);
+                return;
+            }
 
-        } catch (IllegalArgumentException e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            mapper.writeValue(resp.getOutputStream(), Response.error(e.getMessage()));
+            handler.handle(message, response);
+
+        } catch (BadRequestException e) {
+            response.badRequest(e.getMessage());
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            mapper.writeValue(resp.getOutputStream(), Response.error("Internal error"));
+            response.internalError();
         }
-    }
 
-    private void dispatch(Request request) {
-        switch (request.getMSG().name) {
-            case "doSign" -> DoSign.handle(request.getMSG().data);
-            default -> throw new IllegalArgumentException(
-                    "Unknown MSG.NAME: " + request.getMSG().name
-            );
-        }
     }
 }

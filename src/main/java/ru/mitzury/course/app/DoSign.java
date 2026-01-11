@@ -1,24 +1,16 @@
 package ru.mitzury.course.app;
 
-import java.util.Map;
+import ru.mitzury.course.core.BadRequestException;
 
 public class DoSign {
 
-    public static Object handle(Map<String, Object> data) {
-        String user = (String) data.get("user");
-        String password = (String) data.get("password");
+    public String sign(String data) {
 
-        if (user == null || password == null) {
-            throw new IllegalArgumentException("user and password required");
+        if (data == null || data.isBlank()) {
+            throw new BadRequestException("Field 'data' is required for DoSign");
         }
 
-        if ("ivan".equals(user) && "123".equals(password)) {
-            return Map.of(
-                    "token", "abc123",
-                    "expires", 3600
-            );
-        }
-
-        throw new IllegalArgumentException("Invalid credentials");
+        // здесь реальная бизнес-логика подписи
+        return "signed:" + data;
     }
 }
