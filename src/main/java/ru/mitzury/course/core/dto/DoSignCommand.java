@@ -1,13 +1,19 @@
 package ru.mitzury.course.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.ZonedDateTime;
 
 public class DoSignCommand {
 
-    private final ZonedDateTime  date;
+    private final ZonedDateTime date;
     private final String file;
 
-    public DoSignCommand(ZonedDateTime date, String file) {
+    @JsonCreator
+    public DoSignCommand(
+            @JsonProperty("date") ZonedDateTime date,
+            @JsonProperty("file") String file
+    ) {
         if (date == null) {
             throw new IllegalArgumentException("date must not be null");
         }

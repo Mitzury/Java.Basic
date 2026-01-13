@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.mitzury.course.core.dto.RequestDTO;
+import ru.mitzury.course.core.handler.DoCreateTitleHandler;
+import ru.mitzury.course.core.handler.DoSignHandler;
+import ru.mitzury.course.core.handler.Handler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +24,7 @@ public class DoFileWorkerServlet extends HttpServlet {
     @Override
     public void init() {
         handlers.put("/DoSign", new DoSignHandler());
+        handlers.put("/DoCreateTitle", new DoCreateTitleHandler());
     }
 
     @Override

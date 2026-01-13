@@ -1,4 +1,4 @@
-package ru.mitzury.course.app;
+package ru.mitzury.course.app.DoSign;
 
 import ru.mitzury.course.core.dto.DoSignCommand;
 import java.io.*;
@@ -12,7 +12,7 @@ public class DoSignService {
         String inputPdf = command.getFile();
         String outputPdf = "output.pdf";
         String certPath = "cert.pfx";
-        String certPassword = "";
+        String certPassword = "VvmOaS==";
 
         CertificateLoader.Cert cert =
                 CertificateLoader.load(certPath, certPassword);

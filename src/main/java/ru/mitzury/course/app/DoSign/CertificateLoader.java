@@ -1,4 +1,4 @@
-package ru.mitzury.course.app;
+package ru.mitzury.course.app.DoSign;
 
 import java.io.FileInputStream;
 import java.security.*;

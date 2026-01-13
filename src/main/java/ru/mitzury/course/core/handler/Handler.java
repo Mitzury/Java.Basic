@@ -1,4 +1,4 @@
-package ru.mitzury.course.core;
+package ru.mitzury.course.core.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

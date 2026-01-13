@@ -1,4 +1,4 @@
-package ru.mitzury.course.app;
+package ru.mitzury.course.app.DoSign;
 
 import com.itextpdf.forms.form.element.SignatureFieldAppearance;
 import com.itextpdf.kernel.font.PdfFont;
