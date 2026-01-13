@@ -9,7 +9,6 @@ public class DoSignService {
 
         String data = command.getData();
 
-
         String inputPdf = command.getFile();
         String outputPdf = "output.pdf";
         String certPath = "cert.pfx";
@@ -28,12 +27,9 @@ public class DoSignService {
                     cert.privateKey(),
                     cert.chain()
             );
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         System.out.println("PDF signed successfully");
 
     }
