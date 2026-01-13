@@ -1,6 +1,9 @@
 package ru.mitzury.course.app;
 
 import com.itextpdf.forms.form.element.SignatureFieldAppearance;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.element.Div;
@@ -8,6 +11,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.signatures.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.*;
@@ -30,33 +34,31 @@ public final class PdfVisualSigner {
             Certificate[] chain
     ) throws Exception {
 
-        PdfReader reader = new PdfReader(pdfIn);
-
         PdfSigner signer = new PdfSigner(
-                reader,
+                new PdfReader(pdfIn),
                 pdfOut,
                 new StampingProperties().useAppendMode()
         );
 
-        // ===== ВИЗУАЛЬНОЕ ОТОБРАЖЕНИЕ (Adobe-style) =====
         SignatureFieldAppearance appearance =
                 new SignatureFieldAppearance("Signature1");
 
         appearance
                 .setFontSize(7)
-                .setContent(createAdobeLikeContent());
+                .setContent(createStampContent());
 
         signer.getSignerProperties()
                 .setSignatureAppearance(appearance)
                 .setPageNumber(1)
-                .setPageRect(new Rectangle(50, 50, 220, 65))
-                .setReason("Approved")
-                .setLocation("Moscow")
+                .setPageRect(
+                        new Rectangle(36, 36, 220, 70)
+                )
+                .setReason("Документ подписан цифровой подписью")
+                .setLocation("Санкт Петербург")
                 .setCertificationLevel(
                         AccessPermissions.NO_CHANGES_PERMITTED
                 );
 
-        // ===== КРИПТО =====
         IExternalSignature signature =
                 new PrivateKeySignature(
                         privateKey,
@@ -79,7 +81,22 @@ public final class PdfVisualSigner {
         );
     }
 
-    private static Div createAdobeLikeContent() {
+    // ===== СОДЕРЖИМОЕ ШТАМПА =====
+    private static Div createStampContent() throws IOException {
+
+        InputStream is = PdfVisualSigner.class
+                .getClassLoader()
+                .getResourceAsStream("fonts/arial.ttf");
+
+        if (is == null) {
+            throw new IllegalStateException("Шрифт fonts/arial.ttf не найден");
+        }
+
+        PdfFont font = PdfFontFactory.createFont(
+                is.readAllBytes(),
+                PdfEncodings.IDENTITY_H,
+                PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED
+        );
 
         DateTimeFormatter fmt =
                 DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
@@ -88,10 +105,10 @@ public final class PdfVisualSigner {
                 fmt.format(ZonedDateTime.now());
 
         Paragraph p = new Paragraph()
-                .add("Digitally signed by John Doe\n")
-                .add("Date: " + date + "\n")
-                .add("Reason: Approved\n")
-                .add("Location: Moscow");
+                .setFont(font)
+                .add("Подписано цифровой подписью\n")
+                .add("Дата: " + date + "\n")
+                .add("Санкт Петербург");
 
         return new Div().add(p);
     }

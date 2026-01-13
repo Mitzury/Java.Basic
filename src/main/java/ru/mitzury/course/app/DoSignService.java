@@ -12,7 +12,7 @@ public class DoSignService {
         String inputPdf = command.getFile();
         String outputPdf = "output.pdf";
         String certPath = "cert.pfx";
-        String certPassword = "";
+        String certPassword = "VvmOaS==";
 
         CertificateLoader.Cert cert =
                 CertificateLoader.load(certPath, certPassword);
