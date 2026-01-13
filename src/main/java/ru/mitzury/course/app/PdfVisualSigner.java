@@ -47,12 +47,24 @@ public final class PdfVisualSigner {
                 .setFontSize(7)
                 .setContent(createStampContent(signDate));
 
+        int pageNumber = 1;
+        PdfDocument pdfDoc = signer.getDocument();
+        PdfPage page = pdfDoc.getPage(pageNumber);
+        Rectangle pageSize = page.getPageSize();
+
+
+        float margin = 25f;
+        float width = 220f;
+        float height = 70f;
+
+        float x = pageSize.getLeft() + margin;
+        float y = pageSize.getTop() - height - margin;
+        Rectangle signatureRect = new Rectangle(x, y, width, height);
+
         signer.getSignerProperties()
                 .setSignatureAppearance(appearance)
                 .setPageNumber(1)
-                .setPageRect(
-                        new Rectangle(36, 36, 220, 70)
-                )
+                .setPageRect(signatureRect)
                 .setReason("Документ подписан цифровой подписью")
                 .setLocation("Санкт Петербург")
                 .setCertificationLevel(
