@@ -51,7 +51,7 @@ public class DoSignHandler implements Handler {
         response.setContentType("application/json");
 
         try (PrintWriter writer = response.getWriter()) {
-            writer.write("{\"result\":\"DoSign executed\"}");
+            writer.write("{\"result\":\"PDF signed successfully\"}");
         }
     }
     private void sendError(HttpServletResponse response, int status, String error) throws IOException {

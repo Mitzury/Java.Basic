@@ -30,7 +30,5 @@ public class DoSignService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("PDF signed successfully");
-
     }
 }
