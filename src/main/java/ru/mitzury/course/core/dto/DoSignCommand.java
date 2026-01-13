@@ -1,23 +1,25 @@
 package ru.mitzury.course.core.dto;
 
+import java.time.ZonedDateTime;
+
 public class DoSignCommand {
 
-    private final String data;
+    private final ZonedDateTime  date;
     private final String file;
 
-    public DoSignCommand(String data, String file) {
-        if (data == null || data.isBlank()) {
-            throw new IllegalArgumentException("data must not be empty");
+    public DoSignCommand(ZonedDateTime date, String file) {
+        if (date == null) {
+            throw new IllegalArgumentException("date must not be null");
         }
         if (file == null || file.isBlank()) {
             throw new IllegalArgumentException("file must not be empty");
         }
-        this.data = data;
+        this.date = date;
         this.file = file;
     }
 
-    public String getData() {
-        return data;
+    public ZonedDateTime getDate() {
+        return date;
     }
 
     public String getFile() {

@@ -31,8 +31,8 @@ public final class PdfVisualSigner {
             InputStream pdfIn,
             OutputStream pdfOut,
             PrivateKey privateKey,
-            Certificate[] chain
-    ) throws Exception {
+            Certificate[] chain,
+            ZonedDateTime signDate) throws Exception {
 
         PdfSigner signer = new PdfSigner(
                 new PdfReader(pdfIn),
@@ -45,7 +45,7 @@ public final class PdfVisualSigner {
 
         appearance
                 .setFontSize(7)
-                .setContent(createStampContent());
+                .setContent(createStampContent(signDate));
 
         signer.getSignerProperties()
                 .setSignatureAppearance(appearance)
@@ -81,9 +81,7 @@ public final class PdfVisualSigner {
         );
     }
 
-    // ===== СОДЕРЖИМОЕ ШТАМПА =====
-    private static Div createStampContent() throws IOException {
-
+    private static Div createStampContent(ZonedDateTime signDate) throws IOException {
         InputStream is = PdfVisualSigner.class
                 .getClassLoader()
                 .getResourceAsStream("fonts/arial.ttf");
@@ -101,14 +99,13 @@ public final class PdfVisualSigner {
         DateTimeFormatter fmt =
                 DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-        String date =
-                fmt.format(ZonedDateTime.now());
+        String date = fmt.format(signDate);
 
         Paragraph p = new Paragraph()
                 .setFont(font)
                 .add("Подписано цифровой подписью\n")
-                .add("Дата: " + date + "\n")
-                .add("Санкт Петербург");
+                .add("Дата и время подписи: " + date + "\n")
+                .add("Место подписания: Санкт Петербург");
 
         return new Div().add(p);
     }

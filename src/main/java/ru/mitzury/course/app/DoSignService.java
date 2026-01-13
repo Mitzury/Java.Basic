@@ -2,13 +2,13 @@ package ru.mitzury.course.app;
 
 import ru.mitzury.course.core.dto.DoSignCommand;
 import java.io.*;
+import java.time.ZonedDateTime;
 
 public class DoSignService {
 
     public void execute(DoSignCommand command) throws Exception {
 
-        String data = command.getData();
-
+        ZonedDateTime signDate = command.getDate();
         String inputPdf = command.getFile();
         String outputPdf = "output.pdf";
         String certPath = "cert.pfx";
@@ -25,7 +25,8 @@ public class DoSignService {
                     in,
                     out,
                     cert.privateKey(),
-                    cert.chain()
+                    cert.chain(),
+                    signDate
             );
         } catch (IOException e) {
             throw new RuntimeException(e);

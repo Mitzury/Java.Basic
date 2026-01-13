@@ -34,9 +34,9 @@ public class DoSignHandler implements Handler {
         DoSignCommand command;
         try {
             command = new DoSignCommand(
-                    message.getData().asText(),
-                    message.getFile().asText()
-            );
+                    message.getDate(),
+                    message.getFile()
+                    );
         } catch (IllegalArgumentException e) {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             return;

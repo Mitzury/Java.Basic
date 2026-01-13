@@ -1,15 +1,16 @@
 package ru.mitzury.course.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+
+import java.time.ZonedDateTime;
 
 public class MessageDTO {
 
     @JsonProperty("MsgName")
     private String msgName;
 
-    private JsonNode data;
-    private JsonNode file;
+    private ZonedDateTime date;
+    private String file;
 
     public String getMsgName() {
         return msgName;
@@ -19,19 +20,19 @@ public class MessageDTO {
         this.msgName = msgName;
     }
 
-    public JsonNode getData() {
-        return data;
+    public ZonedDateTime getDate() {
+        return date;
     }
 
-    public void setData(JsonNode data) {
-        this.data = data;
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
     }
 
-    public JsonNode getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(JsonNode file) {
+    public void setFile(String file) {
         this.file = file;
     }
 }
