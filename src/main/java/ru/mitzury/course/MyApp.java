@@ -2,7 +2,7 @@ package ru.mitzury.course;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
-import ru.mitzury.course.core.DispatcherServlet;
+import ru.mitzury.course.core.DoFileWorkerServlet;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,13 +18,13 @@ public class MyApp {
 
         Path baseDir = Files.createTempDirectory("tomcat");
         tomcat.setBaseDir(baseDir.toString());
-        Context context = tomcat.addContext("", baseDir.toString());
+        Context context = tomcat.addContext("/app", baseDir.toString());
 
-        Tomcat.addServlet(context, "dispatcher", new DispatcherServlet());
-        context.addServletMappingDecoded("/api/v1/*", "dispatcher");
+        Tomcat.addServlet(context, "DoFileWorker", new DoFileWorkerServlet());
+        context.addServletMappingDecoded("/api/v1/*", "DoFileWorker");
 
         tomcat.start();
-        System.out.println(tomcat.getHost() + " Port: " + tomcat.getConnector().getLocalPort());
+        System.out.println(tomcat.getHost().getName() + " Port: " + tomcat.getConnector().getLocalPort());
 
         tomcat.getServer().await();
     }
