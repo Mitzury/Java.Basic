@@ -1,6 +1,5 @@
 package ru.mitzury.hw11;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements SearchTree<T> 
         return node;
     }
 
-    // Публичный метод поиска
     @Override
     public T find(T element) {
         return findRecursive(root, element);
@@ -51,13 +49,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements SearchTree<T> 
             return findRecursive(node.right, element);
         }
     }
-
     @Override
     public List<T> getSortedList() {
         return new ArrayList<>(sortedList);
     }
-
-    // Внутренний класс узла дерева
     private static class Node<T> {
         T value;
         Node<T> left;
