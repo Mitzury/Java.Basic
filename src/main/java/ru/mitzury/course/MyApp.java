@@ -1,31 +1,33 @@
 package ru.mitzury.course;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.startup.Tomcat;
-import ru.mitzury.course.core.DoFileWorkerServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+import ru.mitzury.course.server.TomcatServer;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+public final class MyApp {
 
-public class MyApp {
+    private static final Logger log = LoggerFactory.getLogger(MyApp.class);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        Tomcat tomcat = new Tomcat();
-        tomcat.setPort(8080);
-        tomcat.setHostname("127.0.0.1");
-        tomcat.getConnector();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
 
-        Path baseDir = Files.createTempDirectory("tomcat");
-        tomcat.setBaseDir(baseDir.toString());
-        Context context = tomcat.addContext("/app", baseDir.toString());
+        TomcatServer server = new TomcatServer();
 
-        Tomcat.addServlet(context, "DoFileWorker", new DoFileWorkerServlet());
-        context.addServletMappingDecoded("/api/v1/*", "DoFileWorker");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutting down application");
+            server.stop();
+        }));
 
-        tomcat.start();
-        System.out.println(tomcat.getHost().getName() + " Port: " + tomcat.getConnector().getLocalPort());
-
-        tomcat.getServer().await();
+        try {
+            server.start();
+            log.info("Application started successfully");
+            server.await();
+        } catch (Exception e) {
+            log.error("Failed to start application", e);
+            System.exit(1);
+        }
     }
 }

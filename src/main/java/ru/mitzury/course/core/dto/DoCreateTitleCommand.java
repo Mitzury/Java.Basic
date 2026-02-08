@@ -14,10 +14,8 @@ public class DoCreateTitleCommand {
     private String year;
 
     public DoCreateTitleCommand() {
-        // Jackson
     }
 
-    // ===== setters =====
 
     public void setFile(String file) {
         this.file = file;
@@ -59,7 +57,6 @@ public class DoCreateTitleCommand {
         this.year = year;
     }
 
-    // ===== getters =====
 
     public String getFile() {
         return file;
