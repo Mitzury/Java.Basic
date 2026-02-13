@@ -13,5 +13,3 @@ public class MyApp {
             System.out.println(tree.getSortedList()); // [1, 3, 5, 7, 9, 11, 13]
         }
 }
-
-
